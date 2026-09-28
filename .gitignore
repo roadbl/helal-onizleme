@@ -1,0 +1,21 @@
+.DS_Store
+Thumbs.db
+node_modules/
+.env
+.env.*
+!.env.example
+*.log
+.idea/
+.vscode/
+*.swp
+*~
+dist/
+build/
+coverage/
+.cache/
+tmp/
+temp/
+*.local
+preview.png
+
+# docs/screenshot.png is intentionally tracked for README preview

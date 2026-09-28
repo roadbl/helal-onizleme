@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Helal Ön İzleme — Öğretici Portföy Platformu</title>
+  <meta name="description" content="Eğitim amaçlı İslami/katılım-benzeri portföy simülasyonu. Gerçek para yok; fiyatlar simüle edilir; yatırım tavsiyesi değildir." />
+  <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js" defer></script>
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <div class="banner" role="status">
+    <strong>Simülasyon · gerçek para yok</strong>
+    <span>· Fiyatlar eğitici amaçlı üretilir; resmi BIST / katılım endeksi verisi değildir. Yatırım tavsiyesi değildir.</span>
+  </div>
+
+  <div class="app">
+    <aside class="sidebar">
+      <div class="brand">
+        <span class="brand-mark" aria-hidden="true"></span>
+        <div>
+          <strong>Helal Ön İzleme</strong>
+          <small>Öğretici simülasyon</small>
+        </div>
+      </div>
+
+      <div class="portfolio-switch" id="portfolio-switch">
+        <label class="switch-label">Aktif portföy</label>
+        <select id="portfolio-select" aria-label="Portföy seç"></select>
+        <button class="btn btn-sm btn-block" type="button" id="btn-new-portfolio">+ Yeni portföy</button>
+      </div>
+
+      <nav aria-label="Ana menü">
+        <div class="nav-group">
+          <span class="nav-group-label">Portföy</span>
+          <button class="nav-item is-active" data-view="portfolio" type="button">Portföyüm</button>
+          <button class="nav-item" data-view="templates" type="button">Öğretici portföyler</button>
+        </div>
+        <div class="nav-group">
+          <span class="nav-group-label">Piyasa</span>
+          <button class="nav-item" data-view="bist" type="button">Eğitim paneli</button>
+          <button class="nav-item" data-view="news" type="button">Haber etkileri</button>
+          <button class="nav-item" data-view="metrics" type="button">Metrikler</button>
+        </div>
+        <div class="nav-group">
+          <span class="nav-group-label">Akademi</span>
+          <button class="nav-item" data-view="learn" type="button">Öğren</button>
+          <button class="nav-item" data-view="briefs" type="button">Briefler</button>
+          <button class="nav-item" data-view="scenarios" type="button">Geçmiş senaryolar</button>
+        </div>
+      </nav>
+      <div class="sidebar-foot">
+        <p class="disclaimer">Demo veriler. Canlı emir / ödeme yoktur. Resmi endeks üyeliği iddiası yoktur.</p>
+      </div>
+    </aside>
+
+    <div class="main">
+      <header class="topbar">
+        <div>
+          <h1 id="view-title">Portföyüm</h1>
+          <p class="muted" id="subtitle">Değer, eklediğin araçlara göre artar veya azalır</p>
+        </div>
+        <div class="topbar-actions">
+          <button class="btn btn-ghost" type="button" id="btn-delete-portfolio" hidden>Portföyü sil</button>
+          <button class="btn btn-ghost" type="button" id="btn-refresh">Simüle hareket üret</button>
+        </div>
+      </header>
+
+      <section class="view is-active" id="view-portfolio">
+        <div id="empty-state" class="panel onboarding" hidden>
+          <h2>İlk ön izleme portföyünü oluştur</h2>
+          <p>Birden fazla portföy kurabilirsin. Değer, eklediğin varlıkların simüle fiyat hareketine göre yükselir veya düşer. Oluşturma tarihinden itibaren kâr/zarar izlenir. Gerçek para yoktur.</p>
+          <div class="actions-row">
+            <button class="btn" type="button" id="btn-empty-create">Boş portföy oluştur</button>
+            <button class="btn btn-ghost" type="button" id="btn-empty-templates">Öğretici portföy seç</button>
+          </div>
+        </div>
+
+        <div id="portfolio-live" hidden>
+          <div class="kpi-row">
+            <article class="kpi">
+              <span>Güncel değer</span>
+              <strong id="kpi-value">₺0</strong>
+              <em id="kpi-cash">Nakit: —</em>
+            </article>
+            <article class="kpi">
+              <span>Oluşturulduğundan beri K/Z</span>
+              <strong id="kpi-pnl">₺0</strong>
+              <em id="kpi-pnl-pct">—</em>
+            </article>
+            <article class="kpi">
+              <span>Günlük değişim</span>
+              <strong id="kpi-day">₺0</strong>
+              <em id="kpi-day-pct">—</em>
+            </article>
+            <article class="kpi">
+              <span>Oluşturma</span>
+              <strong id="kpi-created" class="kpi-date">—</strong>
+              <em id="kpi-age">—</em>
+            </article>
+          </div>
+
+          <div class="grid-2">
+            <article class="panel">
+              <div class="panel-head"><h2>Değer seyri (oluşturulduğundan beri)</h2></div>
+              <div class="chart-wrap">
+                <canvas id="chart-value" height="220"></canvas>
+                <p class="chart-fallback muted" id="chart-value-fallback" hidden>Grafik yüklenemedi (Chart.js). Tablo ve KPI’lar çalışmaya devam eder.</p>
+              </div>
+            </article>
+            <article class="panel">
+              <div class="panel-head"><h2>Dağılım</h2></div>
+              <div class="chart-wrap">
+                <canvas id="chart-alloc" height="220"></canvas>
+                <p class="chart-fallback muted" id="chart-alloc-fallback" hidden>Grafik yüklenemedi (Chart.js). Dağılım tablodan okunabilir.</p>
+              </div>
+            </article>
+          </div>
+
+          <article class="panel">
+            <div class="panel-head">
+              <h2 id="portfolio-name">Portföy</h2>
+              <button class="btn btn-sm" type="button" id="btn-add">+ Araç ekle</button>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Araç</th>
+                    <th>Tür</th>
+                    <th class="num">Miktar</th>
+                    <th class="num">Alış</th>
+                    <th class="num">Güncel</th>
+                    <th class="num">Değer</th>
+                    <th class="num">K/Z</th>
+                    <th class="num">F/K</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody id="holdings-body"></tbody>
+              </table>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="view" id="view-bist">
+        <p class="section-intro">Katılım-benzeri eğitim paneli (simülasyon). Borsa İstanbul’da katılım / helal filtre <strong>örnekleri</strong> ve diğer İslami yatırım araçları. Fiyatlar eğitim simülasyonudur; resmi BIST verisi veya yatırım tavsiyesi değildir. Listeler dönemsel screening’e göre değişebilir; üyelik iddiası yoktur.</p>
+        <div class="filter-bar">
+          <button class="chip is-active" type="button" data-bist-filter="all">Tümü</button>
+          <button class="chip" type="button" data-bist-filter="Hisse">Helal hisse (örnek)</button>
+          <button class="chip" type="button" data-bist-filter="Sukuk">Sukuk</button>
+          <button class="chip" type="button" data-bist-filter="Fon">Fon</button>
+          <button class="chip" type="button" data-bist-filter="Emtia">Emtia</button>
+          <button class="chip" type="button" data-bist-filter="Katılım">Katılım</button>
+          <button class="chip" type="button" data-bist-filter="Gayrimenkul">GYO</button>
+          <input class="search" type="search" id="bist-search" placeholder="Sembol veya ad ara…" aria-label="Panelde ara" />
+          <span class="live-pill" id="live-pill"><span class="live-dot"></span> Simülasyon tick · <span id="live-clock">—</span></span>
+        </div>
+        <article class="panel">
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Sembol</th>
+                  <th>Ad</th>
+                  <th>Tür</th>
+                  <th>Endeks notu</th>
+                  <th class="num">Simüle fiyat</th>
+                  <th class="num">Günlük %</th>
+                  <th class="num">F/K</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody id="bist-body"></tbody>
+            </table>
+          </div>
+        </article>
+      </section>
+
+      <section class="view" id="view-news">
+        <p class="section-intro">Geçmiş ve güncel haber başlıklarının yatırım araçlarını genelde nasıl etkilediği — uzman mantığı ve tarihsel örüntülere göre öğretici briefler. Örnek: jeopolitik gerilim → altın; şirket anlaşması → ilgili hisse. Garantili sonuç değildir; “ne düzeyde / neye göre düşünülür” çerçevesidir.</p>
+        <div class="filter-bar">
+          <button class="chip is-active" type="button" data-news-filter="all">Tümü</button>
+          <button class="chip" type="button" data-news-filter="jeopolitik">Jeopolitik</button>
+          <button class="chip" type="button" data-news-filter="sirket">Şirket / anlaşma</button>
+          <button class="chip" type="button" data-news-filter="makro">Makro / faiz</button>
+          <button class="chip" type="button" data-news-filter="emtia">Emtia</button>
+          <button class="chip" type="button" data-news-filter="sektor">Sektör</button>
+        </div>
+        <div class="briefs" id="news-list"></div>
+      </section>
+
+      <section class="view" id="view-templates">
+        <p class="section-intro">Hazır öğretici portföyler. Tek tıkla kopyanı oluşturursun; varlıklar simülasyon nakitten düşülür. Gerçek para yok.</p>
+        <div class="card-grid" id="templates-grid"></div>
+      </section>
+
+      <section class="view" id="view-scenarios">
+        <p class="section-intro">Geçmiş yıllardaki açıklama, adım veya anlaşmalar çerçevesinde: belirli bir birim fiyattan yatırım yapılsaydı bugün (simülasyon) kâr/zarar ne olurdu? Rakamlar eğitim senaryosudur; tarihsel backtest değildir.</p>
+        <div class="card-grid" id="scenarios-grid"></div>
+      </section>
+
+      <section class="view" id="view-metrics">
+        <p class="section-intro">Hisse ve fon benzeri araçlarda F/K, PD/DD, borçluluk gibi <strong>örnek / referans</strong> metrikler. Fiyattan bağımsız sabit örnek değerlerdir. Öğren bölümündeki brieflerle nasıl yorumlandığını gör.</p>
+        <article class="panel">
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Sembol</th>
+                  <th>Ad</th>
+                  <th class="num">Simüle fiyat</th>
+                  <th class="num">Referans F/K (örnek, fiyattan bağımsız)</th>
+                  <th class="num">Referans PD/DD (örnek)</th>
+                  <th class="num">Referans temettü % (örnek)</th>
+                  <th class="num">Referans borç/özkaynak (örnek)</th>
+                  <th>Not</th>
+                </tr>
+              </thead>
+              <tbody id="metrics-body"></tbody>
+            </table>
+          </div>
+        </article>
+      </section>
+
+      <section class="view" id="view-learn">
+        <div class="learn-grid" id="learn-grid"></div>
+      </section>
+
+      <section class="view" id="view-briefs">
+        <p class="section-intro">Uzman yaklaşımları + metrik (F/K vb.) yorumu. Alıntılar özetlenmiştir.</p>
+        <div class="briefs" id="briefs-list"></div>
+      </section>
+    </div>
+  </div>
+
+  <dialog id="modal-create">
+    <form method="dialog" id="form-create">
+      <h2>Yeni portföy</h2>
+      <label>Ad <input name="name" type="text" required maxlength="60" placeholder="örn. Dengeli deneme" /></label>
+      <label>Başlangıç sermayesi (simülasyon ₺)
+        <input name="capital" type="number" required min="1000" step="100" value="100000" />
+      </label>
+      <div class="dialog-actions">
+        <button class="btn btn-ghost" type="submit" value="cancel">Vazgeç</button>
+        <button class="btn" type="submit" value="ok">Oluştur</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog id="modal-add">
+    <form method="dialog" id="form-add">
+      <h2>Simülasyona araç ekle</h2>
+      <p class="muted small">Nakit bakiyeden düşülür — gerçek ödeme yok. Portföy değeri fiyatla artar veya azalır.</p>
+      <label>Araç <select name="symbol" id="add-symbol" required></select></label>
+      <label>Miktar <input name="qty" type="number" min="0.0001" step="any" required /></label>
+      <label>Alış (₺) <input name="buy" type="number" min="0" step="any" required /></label>
+      <p class="muted small" id="add-cost-hint"></p>
+      <div class="dialog-actions">
+        <button class="btn btn-ghost" type="submit" value="cancel">Vazgeç</button>
+        <button class="btn" type="submit" value="ok">Ekle</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog id="modal-toast">
+    <form method="dialog" id="form-toast">
+      <h2 id="toast-title">Bilgi</h2>
+      <p id="toast-message" class="muted"></p>
+      <div class="dialog-actions">
+        <button class="btn" type="submit" value="ok">Tamam</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog id="modal-confirm">
+    <form method="dialog" id="form-confirm">
+      <h2 id="confirm-title">Onay</h2>
+      <p id="confirm-message" class="muted"></p>
+      <div class="dialog-actions">
+        <button class="btn btn-ghost" type="submit" value="cancel">Vazgeç</button>
+        <button class="btn" type="submit" value="ok">Tamam</button>
+      </div>
+    </form>
+  </dialog>
+
+  <div id="toast-stack" class="toast-stack" aria-live="polite" aria-atomic="true"></div>
+</body>
+</html>
