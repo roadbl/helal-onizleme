@@ -18,12 +18,15 @@
 
 ## Features / Özellikler
 
-- Çoklu portföy (localStorage, anahtar: `helal-onizleme-v5`)
-- Öğretici şablonlar (muhafazakâr / dengeli / büyüme / enerji branşı)
-- Katılım-benzeri eğitim paneli + **branş/sektör** görünümü + simüle tick
-- Genişletilmiş haber etki briefleri, metrikler (örnek F/K vb.), öğren kartları, uzman & 2026 bağlamlı briefler
-- Geçmiş senaryolar (simülasyon illüstrasyonu; ASTOR vb.)
-- Fiyat tabanları Eyl 2026 civarı ballpark (simülasyon; resmi kotasyon değildir)
+- Çoklu portföy (localStorage, anahtar: `helal-onizleme-v6`)
+- Öğretici şablonlar (muhafazakâr / dengeli / büyüme / enerji / katılım çekirdek / temettü / savunma-tech / çok sektör)
+- Katılım-benzeri eğitim paneli + BIST deneyimli yatırımcı özetleri + **branş/sektör** (tıklanır filtre, **Çok sektörlü**) + simüle tick
+- **Telefon görünümü** (üst bar) — dar dikey düzen
+- Haber etkileri: eski önemli + yeni (ASTOR ABD çok milyar $ eğitim senaryosu vb.)
+- Pro metrikler: F/K, sektör medyanı, PD/DD, DY, gelir/kâr büyümesi, net borç/EBITDA, likidite, faiz/uygun olmayan gelir mock
+- Öğren: detay açılır kartlar; briefler genişletilmiş
+- Geçmiş senaryolar: aylık / 6 ay / yıllık / çok yıllı ufuklar
+- Fiyat tabanları Eyl 2026 civarı ballpark; tick seed düzeltmesi (Simüle hareket üret görünür çalışır)
 - Chart.js ile değer / dağılım grafikleri (yüklenemezse metin yedek)
 
 ---

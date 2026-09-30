@@ -67,6 +67,7 @@
           <p class="muted" id="subtitle">Değer, eklediğin araçlara göre artar veya azalır</p>
         </div>
         <div class="topbar-actions">
+          <button class="btn btn-ghost" type="button" id="btn-phone" aria-pressed="false" title="Dar telefon benzeri düzen">Telefon görünümü</button>
           <button class="btn btn-ghost" type="button" id="btn-delete-portfolio" hidden>Portföyü sil</button>
           <button class="btn btn-ghost" type="button" id="btn-refresh">Simüle hareket üret</button>
         </div>
@@ -152,6 +153,7 @@
 
       <section class="view" id="view-bist">
         <p class="section-intro">Katılım-benzeri eğitim paneli (simülasyon · Eyl 2026 bağlamı). Borsa İstanbul’da katılım / helal filtre <strong>örnekleri</strong> (ASTOR, ASELS, enerji YE vb.) ve diğer İslami yatırım araçları. Fiyatlar ballpark simülasyondur; resmi BIST verisi veya yatırım tavsiyesi değildir. Resmî katılım listeleri dönemsel değişir; üyelik iddiası yoktur.</p>
+        <div class="briefs bist-edu-wrap" id="bist-edu-summaries" aria-label="Eğitim özetleri"></div>
         <div class="filter-bar">
           <button class="chip is-active" type="button" data-bist-filter="all">Tümü</button>
           <button class="chip" type="button" data-bist-filter="Hisse">Helal hisse (örnek)</button>
@@ -186,7 +188,7 @@
       </section>
 
       <section class="view" id="view-sectors">
-        <p class="section-intro">Hisseleri <strong>branş / sektör</strong> gruplarıyla incele (enerji, gıda, sanayi, teknoloji…). Gruplama eğitim amaçlıdır; resmi BIST sektör sınıflaması veya katılım endeksi üyeliği iddiası yoktur. Fiyatlar Eyl 2026 civarı ballpark simülasyondur — yatırım tavsiyesi değildir.</p>
+        <p class="section-intro">Hisseleri <strong>branş / sektör</strong> gruplarıyla incele. <strong>Ana sektör adına tıkla</strong> → yalnız o sektör; <strong>Tümü</strong> temizler. Birden fazla branşa yayılanlar <strong>Çok sektörlü</strong> grubundadır. Resmi BIST sektör kodu veya katılım üyeliği iddiası yoktur — yatırım tavsiyesi değildir.</p>
         <div class="filter-bar" id="sector-chips"></div>
         <div class="sectors-stack" id="sectors-body"></div>
       </section>
@@ -205,29 +207,37 @@
       </section>
 
       <section class="view" id="view-templates">
-        <p class="section-intro">Hazır öğretici portföyler. Tek tıkla kopyanı oluşturursun; varlıklar simülasyon nakitten düşülür. Gerçek para yok.</p>
+        <p class="section-intro">Hazır öğretici portföyler (muhafazakâr, dengeli, büyüme, enerji, katılım çekirdek, temettü, savunma/teknoloji, çok sektör). Tek tıkla kopya; nakit simülasyondan düşülür. Gerçek para yok · tavsiye değildir.</p>
         <div class="card-grid" id="templates-grid"></div>
       </section>
 
       <section class="view" id="view-scenarios">
-        <p class="section-intro">Geçmiş yıllardaki açıklama, adım veya anlaşmalar çerçevesinde: belirli bir birim fiyattan yatırım yapılsaydı bugün (simülasyon) kâr/zarar ne olurdu? Rakamlar eğitim senaryosudur; tarihsel backtest değildir.</p>
+        <p class="section-intro">Belirli bir birim fiyattan yatırım yapılsaydı bugün (simülasyon) kâr/zarar ne olurdu? Ufuk seç: <strong>aylık · 6 ay · yıllık · çok yıllı</strong>. Rakamlar eğitim senaryosudur; tarihsel backtest veya tavsiye değildir.</p>
+        <div class="filter-bar" id="scenario-horizon-chips"></div>
         <div class="card-grid" id="scenarios-grid"></div>
       </section>
 
       <section class="view" id="view-metrics">
-        <p class="section-intro">Hisse ve fon benzeri araçlarda F/K, PD/DD, borçluluk gibi <strong>örnek / referans</strong> metrikler. Fiyattan bağımsız sabit örnek değerlerdir. Öğren bölümündeki brieflerle nasıl yorumlandığını gör.</p>
+        <p class="section-intro">Pro yatırımcıların baktığı <strong>örnek / simülasyon</strong> metrikler: F/K, sektör F/K medyanı, PD/DD, temettü verimi, gelir/kâr büyümesi, net borç/EBITDA, borç/özkaynak, likidite, faiz oranı % ve uygun olmayan gelir % (katılım eğitimi · mock). Fiyattan bağımsız ballpark’tır — tavsiye veya resmî screening değildir.</p>
         <article class="panel">
           <div class="table-wrap">
-            <table>
+            <table class="metrics-table">
               <thead>
                 <tr>
                   <th>Sembol</th>
                   <th>Ad</th>
                   <th class="num">Simüle fiyat</th>
-                  <th class="num">Referans F/K (örnek, fiyattan bağımsız)</th>
-                  <th class="num">Referans PD/DD (örnek)</th>
-                  <th class="num">Referans temettü % (örnek)</th>
-                  <th class="num">Referans borç/özkaynak (örnek)</th>
+                  <th class="num">F/K</th>
+                  <th class="num">Sektör F/K med. (sim)</th>
+                  <th class="num">PD/DD</th>
+                  <th class="num">Temettü %</th>
+                  <th class="num">Gelir büy. %</th>
+                  <th class="num">Kâr büy. %</th>
+                  <th class="num">Net borç/EBITDA</th>
+                  <th class="num">Borç/özkaynak</th>
+                  <th class="num">Likidite 0–100</th>
+                  <th class="num">Faiz oranı % (mock)</th>
+                  <th class="num">Uygun olmayan gelir % (mock)</th>
                   <th>Not</th>
                 </tr>
               </thead>
@@ -238,6 +248,7 @@
       </section>
 
       <section class="view" id="view-learn">
+        <p class="section-intro">Metrikler, helal screening özeti, haber okuma ve portföy psikolojisi. Kartlarda <strong>Detayı aç</strong> ile BIST deneyimli yatırımcı tarzı eğitim metinleri çıkar. Yatırım tavsiyesi değildir · gerçek para yoktur.</p>
         <div class="learn-grid" id="learn-grid"></div>
       </section>
 
