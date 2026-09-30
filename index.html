@@ -16,7 +16,7 @@
 <body>
   <div class="banner" role="status">
     <strong>Simülasyon · gerçek para yok</strong>
-    <span>· Fiyatlar eğitici amaçlı üretilir; resmi BIST / katılım endeksi verisi değildir. Yatırım tavsiyesi değildir.</span>
+    <span>· Fiyatlar eğitici ballpark’tır (Eyl 2026 bağlamı); resmi BIST / katılım endeksi verisi değildir. Yatırım tavsiyesi değildir.</span>
   </div>
 
   <div class="app">
@@ -44,6 +44,7 @@
         <div class="nav-group">
           <span class="nav-group-label">Piyasa</span>
           <button class="nav-item" data-view="bist" type="button">Eğitim paneli</button>
+          <button class="nav-item" data-view="sectors" type="button">Branş / sektör</button>
           <button class="nav-item" data-view="news" type="button">Haber etkileri</button>
           <button class="nav-item" data-view="metrics" type="button">Metrikler</button>
         </div>
@@ -150,7 +151,7 @@
       </section>
 
       <section class="view" id="view-bist">
-        <p class="section-intro">Katılım-benzeri eğitim paneli (simülasyon). Borsa İstanbul’da katılım / helal filtre <strong>örnekleri</strong> ve diğer İslami yatırım araçları. Fiyatlar eğitim simülasyonudur; resmi BIST verisi veya yatırım tavsiyesi değildir. Listeler dönemsel screening’e göre değişebilir; üyelik iddiası yoktur.</p>
+        <p class="section-intro">Katılım-benzeri eğitim paneli (simülasyon · Eyl 2026 bağlamı). Borsa İstanbul’da katılım / helal filtre <strong>örnekleri</strong> (ASTOR, ASELS, enerji YE vb.) ve diğer İslami yatırım araçları. Fiyatlar ballpark simülasyondur; resmi BIST verisi veya yatırım tavsiyesi değildir. Resmî katılım listeleri dönemsel değişir; üyelik iddiası yoktur.</p>
         <div class="filter-bar">
           <button class="chip is-active" type="button" data-bist-filter="all">Tümü</button>
           <button class="chip" type="button" data-bist-filter="Hisse">Helal hisse (örnek)</button>
@@ -170,6 +171,7 @@
                   <th>Sembol</th>
                   <th>Ad</th>
                   <th>Tür</th>
+                  <th>Branş</th>
                   <th>Endeks notu</th>
                   <th class="num">Simüle fiyat</th>
                   <th class="num">Günlük %</th>
@@ -181,6 +183,12 @@
             </table>
           </div>
         </article>
+      </section>
+
+      <section class="view" id="view-sectors">
+        <p class="section-intro">Hisseleri <strong>branş / sektör</strong> gruplarıyla incele (enerji, gıda, sanayi, teknoloji…). Gruplama eğitim amaçlıdır; resmi BIST sektör sınıflaması veya katılım endeksi üyeliği iddiası yoktur. Fiyatlar Eyl 2026 civarı ballpark simülasyondur — yatırım tavsiyesi değildir.</p>
+        <div class="filter-bar" id="sector-chips"></div>
+        <div class="sectors-stack" id="sectors-body"></div>
       </section>
 
       <section class="view" id="view-news">
@@ -234,7 +242,7 @@
       </section>
 
       <section class="view" id="view-briefs">
-        <p class="section-intro">Uzman yaklaşımları + metrik (F/K vb.) yorumu. Alıntılar özetlenmiştir.</p>
+        <p class="section-intro">Uzman yaklaşımları, katılım screening ve 2026 bağlamlı öğretici briefler + metrik (F/K vb.) yorumu. Alıntılar özetlenmiştir; yatırım tavsiyesi değildir.</p>
         <div class="briefs" id="briefs-list"></div>
       </section>
     </div>

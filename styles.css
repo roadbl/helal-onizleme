@@ -329,3 +329,8 @@ dialog::backdrop { background: rgba(0,0,0,0.55); }
   .live-dot { animation: none; opacity: 1; }
   .price-flash-up, .price-flash-down, .toast { animation: none; }
 }
+
+
+.sectors-stack { display: grid; gap: 0.85rem; }
+.sector-panel .sector-hint { margin: 0 0 0.75rem; line-height: 1.45; }
+.sector-panel .panel-head { margin-bottom: 0.35rem; }

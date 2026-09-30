@@ -1,32 +1,57 @@
 (() => {
-  const STORAGE_KEY = "helal-onizleme-v4";
-  const STORAGE_KEY_LEGACY = "helal-onizleme-v3";
+  const STORAGE_KEY = "helal-onizleme-v5";
+  const STORAGE_KEY_LEGACY = "helal-onizleme-v4";
 
   /** vol: günlük yaklaşık volatilite; drift: hafif uzun vadeli eğilim */
+  /** vol: günlük yaklaşık volatilite; drift: hafif uzun vadeli eğilim
+   *  base: Eyl 2026 civarı ballpark (simülasyon; resmi BIST kotasyonu değildir)
+   *  sector: branş/sektör eğitimi için; resmi endeks sektör kodu iddiası yoktur
+   *  indexNote: resmi katılım üyeliği iddiası YOKTUR — dönemsel screening değişir */
   const CATALOG = [
-    // --- BIST helal / katılım filtre ÖRNEKLERİ (eğitim; resmi endeks listesi değildir) ---
-    { symbol: "ASELS", name: "Aselsan", type: "Hisse", market: "BIST", indexNote: "Eğitim amaçlı örnek sembol", base: 86.2, vol: 0.022, drift: 0.0003, pe: 18.4, pb: 3.1, dy: 0.8, de: 0.35, note: "Savunma · orta F/K" },
-    { symbol: "BIMAS", name: "BİM Mağazalar", type: "Hisse", market: "BIST", indexNote: "Eğitim amaçlı örnek sembol", base: 520, vol: 0.016, drift: 0.00035, pe: 22.5, pb: 6.8, dy: 1.5, de: 0.4, note: "Perakende · yüksek F/K" },
-    { symbol: "EREGL", name: "Ereğli Demir Çelik", type: "Hisse", market: "BIST", indexNote: "Eğitim amaçlı örnek sembol", base: 52.8, vol: 0.025, drift: 0.0001, pe: 9.8, pb: 0.9, dy: 2.1, de: 0.55, note: "Döngüsel sanayi" },
-    { symbol: "FROTO", name: "Ford Otosan", type: "Hisse", market: "BIST", indexNote: "Eğitim amaçlı örnek sembol", base: 980, vol: 0.021, drift: 0.00028, pe: 8.4, pb: 2.2, dy: 4.0, de: 0.65, note: "Otomotiv ihracat" },
-    { symbol: "TOASO", name: "Tofaş Oto", type: "Hisse", market: "BIST", indexNote: "Eğitim amaçlı örnek sembol", base: 245, vol: 0.023, drift: 0.0002, pe: 7.9, pb: 1.8, dy: 5.2, de: 0.7, note: "Otomotiv" },
-    { symbol: "SISE", name: "Şişecam", type: "Hisse", market: "BIST", indexNote: "Eğitim amaçlı örnek sembol", base: 48.6, vol: 0.02, drift: 0.00018, pe: 10.5, pb: 1.0, dy: 2.4, de: 0.8, note: "Cam / kimya" },
-    { symbol: "CIMSA", name: "Çimsa", type: "Hisse", market: "BIST", indexNote: "Eğitim amaçlı örnek sembol", base: 36.4, vol: 0.024, drift: 0.00012, pe: 6.8, pb: 1.2, dy: 3.0, de: 0.9, note: "Çimento" },
-    { symbol: "ENKAI", name: "Enka İnşaat", type: "Hisse", market: "BIST", indexNote: "Eğitim amaçlı örnek sembol", base: 62.1, vol: 0.019, drift: 0.0002, pe: 12.0, pb: 1.5, dy: 1.8, de: 0.25, note: "Müteahhitlik / enerji" },
-    { symbol: "TUPRS", name: "Tüpraş", type: "Hisse", market: "BIST", indexNote: "Eğitim amaçlı örnek sembol · dönemsel", base: 168, vol: 0.026, drift: 0.00015, pe: 5.5, pb: 1.3, dy: 6.0, de: 0.85, note: "Rafineri · emtia duyarlı" },
-    { symbol: "THYAO", name: "Türk Hava Yolları", type: "Hisse", market: "BIST", indexNote: "Eğitim amaçlı örnek sembol · dönemsel", base: 298.5, vol: 0.028, drift: 0.00025, pe: 5.2, pb: 1.1, dy: 0, de: 1.85, note: "Havacılık · yüksek borç" },
-    { symbol: "KCHOL", name: "Koç Holding", type: "Hisse", market: "BIST", indexNote: "Eğitim amaçlı örnek sembol · holding", base: 178.4, vol: 0.02, drift: 0.0002, pe: 7.6, pb: 1.4, dy: 3.2, de: 0.72, note: "Holding iskontosu" },
-    { symbol: "SAHOL", name: "Sabancı Holding", type: "Hisse", market: "BIST", indexNote: "Eğitim amaçlı örnek sembol · holding", base: 92.3, vol: 0.019, drift: 0.00018, pe: 6.9, pb: 1.1, dy: 2.8, de: 0.6, note: "Holding" },
-    { symbol: "TCELL", name: "Turkcell", type: "Hisse", market: "BIST", indexNote: "Eğitim amaçlı örnek sembol", base: 95.5, vol: 0.018, drift: 0.00022, pe: 11.8, pb: 1.9, dy: 3.5, de: 0.95, note: "Telekom" },
-    { symbol: "EKGYO", name: "Emlak Konut GYO", type: "Gayrimenkul", market: "BIST", indexNote: "Eğitim amaçlı örnek sembol · GYO", base: 9.8, vol: 0.017, drift: 0.0001, pe: 9.0, pb: 0.7, dy: 5.5, de: 0.55, note: "Konut GYO" },
-    // --- Diğer İslami araçlar ---
-    { symbol: "ALTIN", name: "Gram Altın", type: "Emtia", market: "Emtia", indexNote: "Eğitim amaçlı örnek sembol · emtia", base: 3120, vol: 0.012, drift: 0.0004, pe: null, pb: null, dy: null, de: null, note: "Jeopolitik duyarlı" },
-    { symbol: "GUMUS", name: "Gram Gümüş", type: "Emtia", market: "Emtia", indexNote: "Eğitim amaçlı örnek sembol · emtia", base: 38.5, vol: 0.018, drift: 0.0002, pe: null, pb: null, dy: null, de: null, note: "Sanayi + yatırım" },
-    { symbol: "SUKUK-TR", name: "Hazine Sukuk (örnek)", type: "Sukuk", market: "Sabit", indexNote: "Eğitim amaçlı örnek sembol · sukuk", base: 102.4, vol: 0.004, drift: 0.00015, pe: null, pb: null, dy: null, de: null, note: "Dayanak / kâr payı" },
-    { symbol: "KTL", name: "Katılım Hesabı TL", type: "Katılım", market: "Banka", indexNote: "Eğitim amaçlı örnek sembol · katılım", base: 100, vol: 0.0015, drift: 0.00012, pe: null, pb: null, dy: null, de: null, note: "Kâr-zarar ortaklığı" },
-    { symbol: "HYF", name: "Helal Hisse Fonu", type: "Fon", market: "TEFAS örn.", indexNote: "Eğitim amaçlı örnek sembol · fon", base: 4.82, vol: 0.014, drift: 0.00022, pe: 14.0, pb: null, dy: null, de: null, note: "Çeşitlendirilmiş hisse" },
-    { symbol: "SKF", name: "Sukuk Fonu", type: "Fon", market: "TEFAS örn.", indexNote: "Eğitim amaçlı örnek sembol · fon", base: 2.15, vol: 0.005, drift: 0.00014, pe: null, pb: null, dy: null, de: null, note: "Düşük vol" },
-    { symbol: "GYO-H", name: "Helal GYO (örnek)", type: "Gayrimenkul", market: "BIST", indexNote: "Eğitim amaçlı örnek sembol · GYO", base: 42.6, vol: 0.015, drift: 0.00018, pe: 11.2, pb: 0.85, dy: 4.5, de: 0.95, note: "Kira odaklı" },
+    // --- Enerji ---
+    { symbol: "ASTOR", name: "Astor Enerji", type: "Hisse", sector: "Enerji", market: "BIST", indexNote: "Eğitim örneği · dönemsel screening (resmî üyelik iddiası yok)", base: 220, vol: 0.032, drift: 0.00015, pe: 17.0, pb: 4.3, dy: 0.5, de: 0.45, note: "Transformatör · yüksek vol" },
+    { symbol: "TUPRS", name: "Tüpraş", type: "Hisse", sector: "Enerji", market: "BIST", indexNote: "Eğitim örneği · dönemsel", base: 400, vol: 0.024, drift: 0.00012, pe: 6.2, pb: 1.5, dy: 5.5, de: 0.80, note: "Rafineri · emtia duyarlı" },
+    { symbol: "ENJSA", name: "Enerjisa Enerji", type: "Hisse", sector: "Enerji", market: "BIST", indexNote: "Eğitim örneği · Katılım 30’a ekleme (Eki 2026 dönemi, örnek)", base: 68, vol: 0.02, drift: 0.00018, pe: 9.5, pb: 1.4, dy: 3.2, de: 0.9, note: "Dağıtım / perakende enerji" },
+    { symbol: "AKFYE", name: "Akfen Yenilenebilir", type: "Hisse", sector: "Enerji", market: "BIST", indexNote: "Eğitim örneği · yenilenebilir", base: 22.5, vol: 0.026, drift: 0.0002, pe: 11.0, pb: 1.8, dy: 1.0, de: 0.7, note: "YE · kapasite hikâyesi" },
+    { symbol: "SMRTG", name: "Smart Güneş Enerjisi", type: "Hisse", sector: "Enerji", market: "BIST", indexNote: "Eğitim örneği · güneş / YE", base: 9.8, vol: 0.03, drift: 0.00015, pe: 8.5, pb: 3.2, dy: 0, de: 0.55, note: "Güneş paneli / YE" },
+    { symbol: "ALFAS", name: "Alfa Solar Enerji", type: "Hisse", sector: "Enerji", market: "BIST", indexNote: "Eğitim örneği · güneş", base: 78, vol: 0.028, drift: 0.00018, pe: 12.0, pb: 2.5, dy: 0.4, de: 0.5, note: "Solar ekipman" },
+    { symbol: "YEOTK", name: "Yeo Teknoloji Enerji", type: "Hisse", sector: "Enerji", market: "BIST", indexNote: "Eğitim örneği · dönemsel (liste giriş/çıkış olabilir)", base: 48, vol: 0.03, drift: 0.0001, pe: 14.0, pb: 2.8, dy: 0, de: 0.6, note: "Enerji teknolojisi" },
+    { symbol: "GESAN", name: "Girişim Elektrik", type: "Hisse", sector: "Enerji", market: "BIST", indexNote: "Eğitim örneği · elektrik taahhüt", base: 52, vol: 0.027, drift: 0.00012, pe: 10.5, pb: 2.1, dy: 0.8, de: 0.65, note: "Elektrik taahhüt" },
+    { symbol: "EUPWR", name: "Europower Enerji", type: "Hisse", sector: "Enerji", market: "BIST", indexNote: "Eğitim örneği · dönemsel", base: 38, vol: 0.029, drift: 0.0001, pe: 11.5, pb: 2.0, dy: 0.3, de: 0.55, note: "Enerji otomasyon" },
+    // --- Teknoloji / Savunma ---
+    { symbol: "ASELS", name: "Aselsan", type: "Hisse", sector: "Teknoloji / Savunma", market: "BIST", indexNote: "Eğitim örneği", base: 380, vol: 0.022, drift: 0.0003, pe: 22.0, pb: 4.2, dy: 0.6, de: 0.30, note: "Savunma elektroniği" },
+    { symbol: "KONTR", name: "Kontrolmatik", type: "Hisse", sector: "Teknoloji / Savunma", market: "BIST", indexNote: "Eğitim örneği · teknoloji", base: 55, vol: 0.031, drift: 0.0002, pe: 18.0, pb: 3.5, dy: 0, de: 0.4, note: "Endüstriyel otomasyon" },
+    // --- Gıda / Perakende ---
+    { symbol: "BIMAS", name: "BİM Mağazalar", type: "Hisse", sector: "Gıda / Perakende", market: "BIST", indexNote: "Eğitim örneği", base: 415, vol: 0.016, drift: 0.0003, pe: 24.0, pb: 7.2, dy: 1.4, de: 0.42, note: "İndirim perakende" },
+    { symbol: "PNSUT", name: "Pınar Süt", type: "Hisse", sector: "Gıda / Perakende", market: "BIST", indexNote: "Eğitim örneği · gıda", base: 115, vol: 0.02, drift: 0.00015, pe: 13.5, pb: 1.6, dy: 2.0, de: 0.5, note: "Süt / gıda" },
+    // --- Sanayi / Metal ---
+    { symbol: "EREGL", name: "Ereğli Demir Çelik", type: "Hisse", sector: "Sanayi / Metal", market: "BIST", indexNote: "Eğitim örneği", base: 38, vol: 0.025, drift: 0.0001, pe: 8.5, pb: 0.85, dy: 2.5, de: 0.50, note: "Döngüsel çelik" },
+    { symbol: "KCAER", name: "Kocaer Çelik", type: "Hisse", sector: "Sanayi / Metal", market: "BIST", indexNote: "Eğitim örneği · Katılım 30’a ekleme (Eki 2026 dönemi, örnek)", base: 32, vol: 0.026, drift: 0.00015, pe: 7.8, pb: 1.3, dy: 1.5, de: 0.7, note: "Çelik profil" },
+    { symbol: "SISE", name: "Şişecam", type: "Hisse", sector: "Sanayi / Metal", market: "BIST", indexNote: "Eğitim örneği", base: 42, vol: 0.02, drift: 0.00015, pe: 9.8, pb: 0.95, dy: 2.2, de: 0.75, note: "Cam / kimya" },
+    // --- Otomotiv ---
+    { symbol: "FROTO", name: "Ford Otosan", type: "Hisse", sector: "Otomotiv", market: "BIST", indexNote: "Eğitim örneği", base: 78, vol: 0.021, drift: 0.00025, pe: 7.5, pb: 2.0, dy: 4.5, de: 0.60, note: "Otomotiv ihracat" },
+    { symbol: "TOASO", name: "Tofaş Oto", type: "Hisse", sector: "Otomotiv", market: "BIST", indexNote: "Eğitim örneği", base: 270, vol: 0.023, drift: 0.0002, pe: 8.0, pb: 1.7, dy: 4.8, de: 0.65, note: "Otomotiv" },
+    // --- İnşaat / Çimento ---
+    { symbol: "CIMSA", name: "Çimsa", type: "Hisse", sector: "İnşaat / Çimento", market: "BIST", indexNote: "Eğitim örneği", base: 42, vol: 0.024, drift: 0.00012, pe: 7.2, pb: 1.3, dy: 2.8, de: 0.85, note: "Çimento" },
+    { symbol: "ENKAI", name: "Enka İnşaat", type: "Hisse", sector: "İnşaat / Çimento", market: "BIST", indexNote: "Eğitim örneği", base: 84, vol: 0.019, drift: 0.0002, pe: 11.5, pb: 1.6, dy: 1.6, de: 0.28, note: "Müteahhitlik / enerji" },
+    // --- Havacılık ---
+    { symbol: "THYAO", name: "Türk Hava Yolları", type: "Hisse", sector: "Havacılık", market: "BIST", indexNote: "Eğitim örneği · dönemsel", base: 280, vol: 0.028, drift: 0.00022, pe: 5.0, pb: 1.05, dy: 0, de: 1.70, note: "Havacılık · borç duyarlı" },
+    // --- Holding ---
+    { symbol: "KCHOL", name: "Koç Holding", type: "Hisse", sector: "Holding", market: "BIST", indexNote: "Eğitim örneği · holding", base: 205, vol: 0.02, drift: 0.0002, pe: 7.2, pb: 1.35, dy: 3.0, de: 0.70, note: "Holding iskontosu" },
+    { symbol: "SAHOL", name: "Sabancı Holding", type: "Hisse", sector: "Holding", market: "BIST", indexNote: "Eğitim örneği · holding", base: 86, vol: 0.019, drift: 0.00018, pe: 6.5, pb: 1.05, dy: 2.6, de: 0.58, note: "Holding" },
+    { symbol: "BERA", name: "Bera Holding", type: "Hisse", sector: "Holding", market: "BIST", indexNote: "Eğitim örneği · Katılım 30’a ekleme (Eki 2026 dönemi, örnek)", base: 18.5, vol: 0.025, drift: 0.00012, pe: 8.0, pb: 0.9, dy: 1.2, de: 0.45, note: "Holding / sanayi" },
+    // --- Telekom ---
+    { symbol: "TCELL", name: "Turkcell", type: "Hisse", sector: "Telekom", market: "BIST", indexNote: "Eğitim örneği", base: 96, vol: 0.018, drift: 0.0002, pe: 11.2, pb: 1.85, dy: 3.8, de: 0.90, note: "Telekom" },
+    // --- Gayrimenkul ---
+    { symbol: "EKGYO", name: "Emlak Konut GYO", type: "Gayrimenkul", sector: "Gayrimenkul", market: "BIST", indexNote: "Eğitim örneği · GYO", base: 18, vol: 0.02, drift: 0.0001, pe: 8.5, pb: 0.65, dy: 4.5, de: 0.50, note: "Konut GYO" },
+    { symbol: "GYO-H", name: "Helal GYO (örnek)", type: "Gayrimenkul", sector: "Gayrimenkul", market: "BIST", indexNote: "Eğitim örneği · GYO", base: 48, vol: 0.015, drift: 0.00018, pe: 10.8, pb: 0.82, dy: 4.2, de: 0.90, note: "Kira odaklı örnek" },
+    // --- Emtia / sabit benzeri ---
+    { symbol: "ALTIN", name: "Gram Altın", type: "Emtia", sector: "Emtia", market: "Emtia", indexNote: "Eğitim örneği · emtia (ballpark Eyl 2026)", base: 6580, vol: 0.012, drift: 0.00035, pe: null, pb: null, dy: null, de: null, note: "Jeopolitik / enflasyon duyarlı" },
+    { symbol: "GUMUS", name: "Gram Gümüş", type: "Emtia", sector: "Emtia", market: "Emtia", indexNote: "Eğitim örneği · emtia", base: 82, vol: 0.018, drift: 0.0002, pe: null, pb: null, dy: null, de: null, note: "Sanayi + yatırım" },
+    { symbol: "SUKUK-TR", name: "Hazine Sukuk (örnek)", type: "Sukuk", sector: "Sabit benzeri", market: "Sabit", indexNote: "Eğitim örneği · sukuk", base: 103.2, vol: 0.004, drift: 0.00015, pe: null, pb: null, dy: null, de: null, note: "Dayanak / kâr payı" },
+    { symbol: "KTL", name: "Katılım Hesabı TL", type: "Katılım", sector: "Sabit benzeri", market: "Banka", indexNote: "Eğitim örneği · katılım", base: 100, vol: 0.0015, drift: 0.00012, pe: null, pb: null, dy: null, de: null, note: "Kâr-zarar ortaklığı" },
+    { symbol: "HYF", name: "Helal Hisse Fonu", type: "Fon", sector: "Fon", market: "TEFAS örn.", indexNote: "Eğitim örneği · fon", base: 5.35, vol: 0.014, drift: 0.00022, pe: 15.0, pb: null, dy: null, de: null, note: "Çeşitlendirilmiş hisse" },
+    { symbol: "SKF", name: "Sukuk Fonu", type: "Fon", sector: "Fon", market: "TEFAS örn.", indexNote: "Eğitim örneği · fon", base: 2.35, vol: 0.005, drift: 0.00014, pe: null, pb: null, dy: null, de: null, note: "Düşük vol" },
   ];
 
   const TYPE_COLORS = {
@@ -55,12 +80,12 @@
       desc: "İstikrar katmanı + filtrelenmiş hisse/fon. F/K çeşitliliği ile öğrenme odaklı.",
       capital: 100000,
       alloc: [
-        { symbol: "SUKUK-TR", weight: 0.25 },
-        { symbol: "HYF", weight: 0.25 },
+        { symbol: "SUKUK-TR", weight: 0.20 },
+        { symbol: "HYF", weight: 0.20 },
         { symbol: "ALTIN", weight: 0.15 },
         { symbol: "ASELS", weight: 0.15 },
-        { symbol: "KCHOL", weight: 0.10 },
-        { symbol: "GYO-H", weight: 0.10 },
+        { symbol: "ASTOR", weight: 0.15 },
+        { symbol: "KCHOL", weight: 0.15 },
       ],
     },
     {
@@ -70,11 +95,27 @@
       desc: "Hisse ağırlıklı. Değer gün içinde belirgin artıp azalabilir — psikolojiyi görmek için.",
       capital: 100000,
       alloc: [
-        { symbol: "BIMAS", weight: 0.25 },
-        { symbol: "THYAO", weight: 0.20 },
-        { symbol: "ASELS", weight: 0.20 },
-        { symbol: "EREGL", weight: 0.15 },
+        { symbol: "BIMAS", weight: 0.20 },
+        { symbol: "ASTOR", weight: 0.18 },
+        { symbol: "ASELS", weight: 0.17 },
+        { symbol: "THYAO", weight: 0.15 },
+        { symbol: "SMRTG", weight: 0.10 },
         { symbol: "HYF", weight: 0.10 },
+        { symbol: "ALTIN", weight: 0.10 },
+      ],
+    },
+    {
+      id: "enerji",
+      badge: "Sektör odaklı",
+      name: "Enerji branşı öğretici",
+      desc: "ASTOR, yenilenebilir ve dağıtım örnekleriyle enerji branşını simüle et. Yüksek volatilite; gerçek para yok.",
+      capital: 100000,
+      alloc: [
+        { symbol: "ASTOR", weight: 0.25 },
+        { symbol: "ENJSA", weight: 0.20 },
+        { symbol: "AKFYE", weight: 0.15 },
+        { symbol: "SMRTG", weight: 0.15 },
+        { symbol: "TUPRS", weight: 0.15 },
         { symbol: "ALTIN", weight: 0.10 },
       ],
     },
@@ -141,6 +182,30 @@
       unit: "1 lot (örnek)",
       expertAngle: "Howard Marks: döngü bilinci — ‘bu sefer farklı’ tuzağı.",
       metricLink: "Döngüselde düşük F/K zirvede tuzak olabilir; PD/DD ve marjlara bak.",
+    },
+    {
+      id: "astor-ipo",
+      badge: "2023→2026",
+      title: "Enerji ekipmanı — halka arz sonrası büyüme anlatısı",
+      context: "ASTOR 2023 halka arzından sonra transformatör/enerji ekipmanı talebiyle öne çıktı; 2026’da yüksek volatilite ve dönemsel screening tartışmaları da gündemde. Simülasyon illüstrasyonudur.",
+      symbol: "ASTOR",
+      entryDate: "2023-01-18",
+      entryPrice: 12.5,
+      unit: "1 lot (örnek)",
+      expertAngle: "Lynch: sektörü tanı. Marks: yüksek beta’da aşırı tepki; tek hisseye aşırı yüklenme.",
+      metricLink: "Yüksek F/K veya PD/DD + haber şoku → sert fiyat hareketi. Resmî katılım listesi dönemsel değişir.",
+    },
+    {
+      id: "gold-2026",
+      badge: "2024–26",
+      title: "Yüksek ons / TL altın — güvenli liman yeniden fiyatlanır",
+      context: "2026 sonbaharinda gram altın ballpark ~6.500+ TL bandı (simülasyon tabanı). Enflasyon ve jeopolitik anlatıları altını portföyde ‘koruma katmanı’ olarak tartıştı.",
+      symbol: "ALTIN",
+      entryDate: "2024-01-15",
+      entryPrice: 2100,
+      unit: "1 gram",
+      expertAngle: "Dalio: rejim değişiminde çeşitlendir. Bogle: emtia trade’ini abartma.",
+      metricLink: "Emtialarda F/K yok; fırsat maliyeti, volatilite ve portföy ağırlığına bak.",
     },
   ];
 
@@ -265,6 +330,85 @@
       expert: "Graham: işin değeri. Buffett: dağıtılmayan kârın nereye gittiği.",
       history: "Temettü günlerinde kısa vadeli alım görülür; uzun vadede iş kalitesi fiyatı belirler.",
     },
+    {
+      id: "katilim-rebalance-2026",
+      cat: "makro",
+      when: "Eyl–Eki 2026 · Katılım endeksi dönemsel güncelleme",
+      headline: "BIST Katılım listelerinde dönemsel giriş/çıkış açıklanırsa",
+      summary: "1 Ekim 2026–30 Nisan 2027 döneminde Katılım 30/50/100 bileşenleri yenilenir. Fonlar ve ‘katılım filtresi’ izleyen yatırımcılar yeniden dengeleme yapabilir; ilgili hisselerde kısa vadeli akış etkisi görülür. Bu site resmî üyelik iddiası taşımaz.",
+      targets: [
+        { symbol: "ENJSA", direction: "up", level: 55, effect: "Listeye ekleme anlatısı talep yaratabilir" },
+        { symbol: "KCAER", direction: "up", level: 50, effect: "Katılım 30’a giriş akışı (örnek)" },
+        { symbol: "YEOTK", direction: "down", level: 55, effect: "Listeden çıkışta pasif fon satışı baskısı" },
+        { symbol: "HYF", direction: "mixed", level: 40, effect: "Fon portföyleri yeniden ağırlıklandırır" },
+      ],
+      decide: "Neye göre: resmî BIST duyurusu, fon büyüklüğü, zaten fiyata girip girmediği. ‘Endekse girdi = al’ garantisi değildir; screening üç ayda bir değişir.",
+      expert: "Bogle: süreç ve maliyete bak. Marks: akış kaynaklı yükseliş geçici olabilir.",
+      history: "Önceki dönemsel güncellemelerde giriş/çıkış hisselerinde açılış volatilitesi artmış; birkaç seans sonra ayrışma azalmıştır.",
+    },
+    {
+      id: "grid-transformer",
+      cat: "sektor",
+      when: "Sektör · şebeke / enerji ekipmanı (2025–26)",
+      headline: "Şebeke yatırımı veya transformatör talebi güçlenirse",
+      summary: "Elektrifikasyon, yenilenebilir bağlantı ve şebeke yenileme anlatıları enerji ekipmanı üreticilerini öne çıkarır. ASTOR bu sınıfın BIST’teki popüler eğitim örneklerindendir; fiyat yüksek beta ile hareket eder.",
+      targets: [
+        { symbol: "ASTOR", direction: "up", level: 70, effect: "Sipariş / kapasite haberine yüksek duyarlılık" },
+        { symbol: "GESAN", direction: "up", level: 55, effect: "Elektrik taahhüt zinciri desteklenebilir" },
+        { symbol: "EUPWR", direction: "up", level: 50, effect: "Enerji otomasyon talebi" },
+        { symbol: "SMRTG", direction: "up", level: 45, effect: "YE ekipmanı ile korelasyon" },
+      ],
+      decide: "Neye göre: sipariş defteri, marj, ihracat, borçluluk, F/K zaten yüksek mi? Tek günlük taban/tavan kovalamak sık hatadır.",
+      expert: "Lynch: işi anla. Graham: güvenlik marjı — haber sonrası aşırı yükselişte kovalama.",
+      history: "2023–26’da enerji ekipmanı temasında sert ralliler ve düzeltmeler peş peşe gelmiştir; volatilite eğitim için öğreticidir.",
+    },
+    {
+      id: "astor-governance",
+      cat: "sirket",
+      when: "Şirket özel · itibar / soruşturma haberleri (ör. Eyl 2026)",
+      headline: "Şirket veya yöneticilere dair olumsuz haber / soruşturma çıkarsa",
+      summary: "İtibar ve yönetişim şokları likiditeyi ve risk primini anında değiştirir. ASTOR örneğinde 2026 sonbaharinda sert satış dalgaları görülmüştür (simülasyon tabanı ballpark). Helal çerçevede de şeffaflık ve yönetişim brief konusudur.",
+      targets: [
+        { symbol: "ASTOR", direction: "down", level: 80, effect: "Haber günlerinde taban / yüksek vol olası" },
+        { symbol: "HYF", direction: "down", level: 25, effect: "Fonlarda ağırlık varsa dolaylı baskı" },
+        { symbol: "ALTIN", direction: "up", level: 30, effect: "Riskten kaçışta sınırlı destek" },
+      ],
+      decide: "Neye göre: haberin doğrulanabilirliği, bilanço etkisi, portföy ağırlığı. Panikte tüm sermayeyi tek yöne taşımak uzmanların kaçındığı tepkidir.",
+      expert: "Munger: aptalca hatalardan kaçın. Buffett: anlamadığın paniğe koşma — ama kaldıraçlı tek hisse riskini de bil.",
+      history: "BIST’te soruşturma/itibar haberlerinde ilgili hissede üst üste günlerce satış baskısı görülmesi sık örüntüdür.",
+    },
+    {
+      id: "renewable-policy",
+      cat: "sektor",
+      when: "Sektör · YE teşvik / ihale",
+      headline: "Yenilenebilir enerji ihalesi veya teşvik açıklanırsa",
+      summary: "Kapasite ihaleleri ve YE politikaları güneş/rüzgâr ekipmanı ve üretim şirketlerini etkiler. SMRTG, ALFAS, AKFYE bu temanın eğitim örnekleridir.",
+      targets: [
+        { symbol: "SMRTG", direction: "up", level: 60, effect: "Güneş ekipmanı talebi" },
+        { symbol: "ALFAS", direction: "up", level: 58, effect: "Solar tedarik zinciri" },
+        { symbol: "AKFYE", direction: "up", level: 55, effect: "Üretim kapasitesi hikâyesi" },
+        { symbol: "ENJSA", direction: "mixed", level: 35, effect: "Dağıtım tarafı dolaylı" },
+      ],
+      decide: "Neye göre: ihale ölçeği, marj, finansman (faiz yükü screening’e de girer), zaten fiyatlanmış mı?",
+      expert: "Dalio: tek tema riskini çeşitlendir. Bogle: politika gürültüsüne aşırı tepki maliyet doğurur.",
+      history: "YE duyurularında ilgili hisselerde kısa vadeli sıçrama; uygulama gecikince geri verme sık görülür.",
+    },
+    {
+      id: "bist-riskoff-2026",
+      cat: "makro",
+      when: "Makro · Eyl 2026 riskten kaçış örneği",
+      headline: "BIST genelinde risk iştahı zayıflarsa (geniş satış)",
+      summary: "Geniş endeks düşüşlerinde yüksek beta hisseler (enerji ekipmanı, büyüme) daha sert geriler; sukuk/katılım ve altın görece dayanıklı kalabilir. Eğitim paneli bu ayrışmayı görmek içindir.",
+      targets: [
+        { symbol: "ASTOR", direction: "down", level: 65, effect: "Yüksek beta · sert geri çekilme" },
+        { symbol: "ASELS", direction: "down", level: 45, effect: "Likit büyük hisse de baskılanır" },
+        { symbol: "SUKUK-TR", direction: "up", level: 35, effect: "Göreli sığınak arayışı" },
+        { symbol: "ALTIN", direction: "up", level: 50, effect: "Güvenli liman talebi" },
+      ],
+      decide: "Neye göre: şokun süresi, nakit ihtiyacı, çeşitlendirme. ‘Dip al’ zamanlaması zordur; portföy amacına bak.",
+      expert: "Marks: sarkaç. Buffett: kaliteli iş + güvenlik marjı (ama kaldıraçlı bilançoya dikkat).",
+      history: "2026 sonbaharinda geniş satış günlerinde beta ayrışması belirginleşmiştir (öğretici örüntü).",
+    },
   ];
 
   const LEARN = [
@@ -324,6 +468,27 @@
       body: "Eğitim amaçlı örnek semboller ve İslami araçlar tek panelde; simüle fiyat ile izlenir. Resmi screening veya endeks üyeliği iddiası değildir.",
       jump: "bist",
     },
+    {
+      id: "sektor",
+      badge: "Branş",
+      title: "Neden sektör / branş bakılır?",
+      body: "Aynı haber farklı branşları ters yönde etkileyebilir (enerji ekipmanı ↑, havacılık ↓). Branş sekmesinde hisseleri sektöre göre gruplayarak çeşitlendirmeyi öğren.",
+      jump: "sectors",
+    },
+    {
+      id: "astor-learn",
+      badge: "Örnek hisse",
+      title: "ASTOR neden listede?",
+      body: "Astor Enerji, enerji ekipmanı temasında sık izlenen bir BIST örneğidir. Resmî katılım endeksi üyeliği dönemsel değişir; bu sitede eğitim simülasyonu olarak yer alır — yatırım tavsiyesi değildir.",
+      jump: "sectors",
+    },
+    {
+      id: "screening-2026",
+      badge: "Helal · 2026",
+      title: "Katılım listeleri neden değişir?",
+      body: "Faaliyet alanı + finansal oranlar (faizli borç, faiz geliri, uygun olmayan gelir payı) üç ayda bir gözden geçirilir. Eki 2026 döneminde onlarca hisse girip çıkmıştır — resmî BIST duyurusunu takip et.",
+      jump: "news",
+    },
   ];
 
   const BRIEFS = [
@@ -382,6 +547,46 @@
       metric: "Borç & karmaşa",
       quote: "Aptalca hatalardan kaçınmak, parlak fikir bulmaktan değerlidir.",
       takeaway: "Yüksek borç/özkaynak + anlamadığın ürün = kaçınılacak birleşim. Helal screening’de faiz yükü de bu başlığa girer.",
+    },
+    {
+      who: "Katılım screening (özet)",
+      where: "BIST metodoloji çerçevesi · eğitim özeti",
+      theme: "Dönemsel liste",
+      metric: "Borç & faiz geliri oranları",
+      quote: "Liste sabit değildir; üç ayda bir güncellenir.",
+      takeaway: "Eyl–Eki 2026’da Katılım 30/50/100’de onlarca giriş/çıkış duyuruldu. Bu sitedeki semboller eğitim örneğidir; resmî üyelik için Borsa İstanbul duyurusuna bak. ASTOR gibi popüler hisseler bazen XKTUM dışında kalabilir — branş ≠ otomatik helal onay.",
+    },
+    {
+      who: "Sektör çeşitlendirme brief’i",
+      where: "Portföy pratiği · 2026",
+      theme: "Branş riski",
+      metric: "Tek tema yoğunluğu",
+      quote: "Aynı hikâyeye aşırı yığılma, çeşitlendirme değildir.",
+      takeaway: "Enerji branşı öğretici şablonunda ASTOR+YE+dağıtım vardır; tamamını tek sipariş haberine bağlama. Sukuk/altın katmanı şablonlarda ‘şok emici’ rolündedir — simülasyon psikolojisini görmek için.",
+    },
+    {
+      who: "Volatilite brief’i — ASTOR örneği",
+      where: "Eğitim paneli · Eyl 2026 bağlamı",
+      theme: "Yüksek beta",
+      metric: "Günlük % salınım",
+      quote: "Yüksek getiri vaadi, yüksek geri çekilme kapasitesiyle gelir.",
+      takeaway: "ASTOR 2026 sonbaharinda kısa sürede çift haneli günlük hareketler göstermiştir (ballpark). Simülasyonda ‘Simüle hareket üret’ ile volatiliteyi hissederken gerçek para yatırma — bu bir ön izlemedir.",
+    },
+    {
+      who: "Mohamed El-Erian",
+      where: "Makro yorumları (özet)",
+      theme: "Rejim değişimi",
+      metric: "Faiz / enflasyon rejimi",
+      quote: "Eski rejim varsayımlarıyla yeni dünyada gezinme.",
+      takeaway: "2024–26’da yüksek altın (gram ~6.500+ TL ballpark) ve katılım ürünlerine ilgi aynı ‘rejim’ tartışmasının parçası. Sukuk ≠ faizsiz sihir; alternatif getiri ve risk iştahı fiyatlanır.",
+    },
+    {
+      who: "Yatırımcı psikolojisi brief’i",
+      where: "Davranışsal finans · eğitim",
+      theme: "FOMO & panik",
+      metric: "Haber ertesi işlem",
+      quote: "En pahalı cümle: ‘Bu sefer kaçırmayayım.’",
+      takeaway: "İhale müjdesi veya endekse giriş haberinde kovalama; soruşturma haberinde dip avı — ikisi de tepkisel. Haber etkileri sekmesindeki ‘ne düzeyde / neye göre’ çerçevesini alışkanlık yap.",
     },
   ];
 
@@ -537,6 +742,7 @@
   let valueChart, allocChart;
   let bistFilter = "all";
   let newsFilter = "all";
+  let sectorFilter = "all";
   let prevPrices = {};
 
   const $ = (sel) => document.querySelector(sel);
@@ -772,7 +978,8 @@
       return (
         c.symbol.toLowerCase().includes(q) ||
         c.name.toLowerCase().includes(q) ||
-        c.type.toLowerCase().includes(q)
+        c.type.toLowerCase().includes(q) ||
+        (c.sector || "").toLowerCase().includes(q)
       );
     });
     const p = active();
@@ -791,6 +998,7 @@
           <td><strong>${c.symbol}</strong></td>
           <td>${c.name}</td>
           <td><span class="tag">${c.type}</span></td>
+          <td><span class="tag">${c.sector || "—"}</span></td>
           <td><span class="muted">${c.indexNote || c.market || "—"}</span></td>
           <td class="num ${flash}">${money(price)}</td>
           <td class="num ${chg >= 0 ? "up" : "down"}">${pct(chg)}</td>
@@ -805,6 +1013,91 @@
       .join("");
     const clock = $("#live-clock");
     if (clock) clock.textContent = new Date().toLocaleTimeString("tr-TR");
+  }
+
+  const SECTOR_ORDER = [
+    "Enerji",
+    "Teknoloji / Savunma",
+    "Gıda / Perakende",
+    "Sanayi / Metal",
+    "Otomotiv",
+    "İnşaat / Çimento",
+    "Havacılık",
+    "Holding",
+    "Telekom",
+    "Gayrimenkul",
+    "Emtia",
+    "Sabit benzeri",
+    "Fon",
+  ];
+
+  function sectorsList() {
+    const set = new Set(CATALOG.map((c) => c.sector).filter(Boolean));
+    return SECTOR_ORDER.filter((s) => set.has(s)).concat(
+      [...set].filter((s) => !SECTOR_ORDER.includes(s)).sort()
+    );
+  }
+
+  function renderSectors() {
+    const chips = $("#sector-chips");
+    const body = $("#sectors-body");
+    if (!chips || !body) return;
+    const sectors = sectorsList();
+    chips.innerHTML =
+      `<button class="chip ${sectorFilter === "all" ? "is-active" : ""}" type="button" data-sector-filter="all">Tümü</button>` +
+      sectors
+        .map(
+          (s) =>
+            `<button class="chip ${sectorFilter === s ? "is-active" : ""}" type="button" data-sector-filter="${escapeHtml(s)}">${escapeHtml(s)}</button>`
+        )
+        .join("");
+
+    const p = active();
+    const groups = sectors.filter((s) => sectorFilter === "all" || sectorFilter === s);
+    body.innerHTML = groups
+      .map((sector) => {
+        const items = CATALOG.filter((c) => c.sector === sector);
+        const rows = items
+          .map((c) => {
+            const price = priceFor(c.symbol, 0, store.tick);
+            const chg = dayChange(c.symbol, store.tick);
+            return `<tr>
+              <td><strong>${c.symbol}</strong></td>
+              <td>${c.name}</td>
+              <td><span class="tag">${c.type}</span></td>
+              <td class="num">${money(price)}</td>
+              <td class="num ${chg >= 0 ? "up" : "down"}">${pct(chg)}</td>
+              <td class="num">${c.pe == null ? "—" : num(c.pe, 1)}</td>
+              <td><span class="muted small">${c.note || ""}</span></td>
+              <td>${
+                p
+                  ? `<button class="btn btn-sm btn-ghost" type="button" data-add-symbol="${c.symbol}">Portföye</button>`
+                  : `<span class="muted">—</span>`
+              }</td>
+            </tr>`;
+          })
+          .join("");
+        return `<article class="panel sector-panel">
+          <div class="panel-head">
+            <h2>${escapeHtml(sector)}</h2>
+            <span class="tag">${items.length} araç</span>
+          </div>
+          <p class="muted small sector-hint">Eğitim gruplamasıdır; resmî BIST sektör kodu veya katılım üyeliği iddiası yoktur. Fiyatlar simüle ballpark’tır (Eyl 2026 bağlamı).</p>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Sembol</th><th>Ad</th><th>Tür</th>
+                  <th class="num">Simüle fiyat</th><th class="num">Günlük %</th>
+                  <th class="num">F/K</th><th>Not</th><th></th>
+                </tr>
+              </thead>
+              <tbody>${rows}</tbody>
+            </table>
+          </div>
+        </article>`;
+      })
+      .join("");
   }
 
   function renderNews() {
@@ -884,7 +1177,7 @@
         <td class="num">${c.pb == null ? "—" : num(c.pb, 2)}</td>
         <td class="num">${c.dy == null ? "—" : num(c.dy, 1) + "%"}</td>
         <td class="num">${c.de == null ? "—" : num(c.de, 2)}</td>
-        <td><span class="muted">${c.note}</span></td>
+        <td><span class="muted">${c.sector ? c.sector + " · " : ""}${c.note || ""}</span></td>
       </tr>`;
     }).join("");
   }
@@ -925,6 +1218,7 @@
     const titles = {
       portfolio: "Portföyüm",
       bist: "Katılım-benzeri eğitim paneli (simülasyon)",
+      sectors: "Hisseler — branş / sektör",
       news: "Haber etkileri",
       templates: "Öğretici portföyler",
       scenarios: "Geçmiş senaryolar",
@@ -936,6 +1230,7 @@
     if (view === "portfolio" && active()) renderCharts();
     if (view === "scenarios") renderScenarios();
     if (view === "bist") renderBist();
+    if (view === "sectors") renderSectors();
     if (view === "news") renderNews();
   }
 
@@ -953,6 +1248,7 @@
     renderScenarios();
     renderMetrics();
     renderBist();
+    renderSectors();
     renderNews();
   }
 
@@ -960,7 +1256,7 @@
     const sel = $("#add-symbol");
     sel.innerHTML = CATALOG.map(
       (c) =>
-        `<option value="${c.symbol}" ${pre === c.symbol ? "selected" : ""}>${c.symbol} — ${c.name}</option>`
+        `<option value="${c.symbol}" ${pre === c.symbol ? "selected" : ""}>${c.symbol} — ${c.name}${c.sector ? " · " + c.sector : ""}</option>`
     ).join("");
     const sym = pre || sel.value;
     $("#form-add [name=buy]").value = priceFor(sym, 0, store.tick).toFixed(2);
@@ -1141,6 +1437,12 @@
         b.classList.toggle("is-active", b === nf)
       );
       renderNews();
+      return;
+    }
+    const sf = e.target.closest("[data-sector-filter]");
+    if (sf) {
+      sectorFilter = sf.dataset.sectorFilter;
+      renderSectors();
     }
   });
 
@@ -1150,6 +1452,8 @@
     // localStorage'a her tick yazma — sadece bellek
     const bistView = $("#view-bist");
     if (bistView && bistView.classList.contains("is-active")) renderBist();
+    const sectorsView = $("#view-sectors");
+    if (sectorsView && sectorsView.classList.contains("is-active")) renderSectors();
     const portView = $("#view-portfolio");
     if (portView && portView.classList.contains("is-active") && active()) {
       renderKPIs();

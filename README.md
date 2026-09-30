@@ -18,11 +18,12 @@
 
 ## Features / Özellikler
 
-- Çoklu portföy (localStorage, anahtar: `helal-onizleme-v4`)
-- Öğretici şablonlar (muhafazakâr / dengeli / büyüme)
-- Katılım-benzeri eğitim paneli + simüle tick
-- Haber etki briefleri, metrikler (örnek F/K vb.), öğren kartları, uzman briefleri
-- Geçmiş senaryolar (simülasyon illüstrasyonu)
+- Çoklu portföy (localStorage, anahtar: `helal-onizleme-v5`)
+- Öğretici şablonlar (muhafazakâr / dengeli / büyüme / enerji branşı)
+- Katılım-benzeri eğitim paneli + **branş/sektör** görünümü + simüle tick
+- Genişletilmiş haber etki briefleri, metrikler (örnek F/K vb.), öğren kartları, uzman & 2026 bağlamlı briefler
+- Geçmiş senaryolar (simülasyon illüstrasyonu; ASTOR vb.)
+- Fiyat tabanları Eyl 2026 civarı ballpark (simülasyon; resmi kotasyon değildir)
 - Chart.js ile değer / dağılım grafikleri (yüklenemezse metin yedek)
 
 ---
