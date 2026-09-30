@@ -757,6 +757,14 @@
       jump: "sectors",
     },
     {
+      id: "halka-arz",
+      badge: "IPO · Eğitim",
+      title: "Halka arz’a neye dikkat edilir?",
+      body: "Talep toplama, fiyat aralığı, lot/tahsis, free float, ortak satışı vs sermaye artırımı, lock-up ve ilk gün volatilite — profesyonel kontrol listesi.",
+      detail: "Halka arz sekmesi illüstratif senaryolar (ASTOR tarzı vb.) ve haber briefleriyle bu başlıkları simüle eder. Resmi BIST/SPK duyurusu veya yatırım tavsiyesi değildir; gerçek para yoktur.",
+      jump: "ipo",
+    },
+    {
       id: "screening-2026",
       badge: "Helal · 2026",
       title: "Katılım listeleri neden değişir?",
@@ -912,6 +920,197 @@
       takeaway: "KCHOL/SAHOL/BERA ‘Çok sektörlü’ grubunda toplanır. İskonto, bağlı ortaklık kalitesi ve temettü politikası ile okunur. Eğitim gruplamasıdır; resmî sektör kodu iddiası yoktur.",
     },
 
+  ];
+
+
+  /** Halka arz (IPO) eğitim içeriği — tavsiye / resmi BIST verisi değildir */
+  const IPO_CHECKLIST = [
+    {
+      id: "talep",
+      title: "Talep toplama süreci",
+      why: "Kurumsal / bireysel talep oranı, talepin fiyat aralığının neresinde yoğunlaştığı ve iptal/eksik karşılama riski fiyatın ‘ne kadar talep gördüğü’nü gösterir.",
+      watch: "Aşırı talep manşeti FOMO yaratabilir; karşılanmayan talep ilk günde de baskı yapabilir. Eğitim: talep ≠ otomatik yükseliş.",
+    },
+    {
+      id: "fiyat",
+      title: "Fiyat aralığı & nihai fiyat",
+      why: "Aralık üstüne yakın fiyat, talebin güçlü okunduğunu düşündürür; alt banda yakınlık ihtiyat veya zayıf talep sinyali olabilir.",
+      watch: "Nihai fiyatın peer F/K / PD/DD ile kıyası (sektör medyanı). ‘Ucuz halka arz’ anlatısı çoğu kez pazarlama dilidir — simülasyon uyarısı.",
+    },
+    {
+      id: "lot",
+      title: "Lot / tahsis & bireysel pay",
+      why: "Bireysel yatırımcıya düşen lot, dağıtım politikası ve kurumsal tahsis dengesi likiditeyi ve ilk gün volatiliteyi etkiler.",
+      watch: "Küçük lot + yüksek bireysel ilgi → açılışta sıkışma / hızlı geri çekilme örüntüleri tarihsel olarak görülmüştür (illüstratif).",
+    },
+    {
+      id: "float",
+      title: "Free float (serbest dolaşım)",
+      why: "Dolaşımdaki pay oranı ince piyasada fiyatın kolay şişip inmesine yol açabilir.",
+      watch: "Düşük float + yüksek haber beta’sı = sert günlük %. Portföy ağırlığını sınırlamak eğitim disiplinidir.",
+    },
+    {
+      id: "kaynak",
+      title: "Ortak satışı vs sermaye artırımı",
+      why: "Sermaye artırımı şirkete nakit getirir; mevcut ortak satışı çoğunlukla likidite sağlar, şirkete doğrudan nakit bırakmayabilir.",
+      watch: "Kullanım amacı (yatırım, borç ödeme, işletme sermayesi) izahname özetinde net mi? Belirsiz ‘genel kurumsal’ dil kırmızı bayrak olabilir (eğitim).",
+    },
+    {
+      id: "sektor",
+      title: "Sektör / peer kıyası",
+      why: "Aynı branştaki benzer şirketlerin F/K, büyüme, borçluluk ve marjları ‘hikâyenin fiyatı’nı tartmak içindir.",
+      watch: "Tek tema (ör. YE / savunma) yığılması çeşitlendirme değildir. Branş sekmesi + Metrikler eğitim kıyası sunar.",
+    },
+    {
+      id: "bilanco",
+      title: "Bilanço / borç & kârlılık",
+      why: "Net borç/EBITDA, faiz yükü, işletme sermayesi ve kâr kalitesi arz sonrası stres testidir.",
+      watch: "Düşük F/K + yüksek kaldıraç ‘ucuz’ yanılsaması yaratabilir (Graham/Marks çerçevesi — eğitim).",
+    },
+    {
+      id: "kullanim",
+      title: "Fonların kullanım amacı",
+      why: "Yatırım CapEx, Ar-Ge, borç azaltma veya ortak çıkışı — her biri farklı risk/getiri profili taşır.",
+      watch: "İzahname ile yönetim sunumu tutarlı mı? Eğitim: vaat edilen proje takvimini abartılı fiyatlama ile karıştırma.",
+    },
+    {
+      id: "lockup",
+      title: "Lock-up (pay kilit) süreleri",
+      why: "Kurucu / büyük ortak kilit süreleri bitince arz baskısı gelebilir.",
+      watch: "Lock-up bitiş takvimini takvimine işle (eğitim alışkanlığı). Resmi tarih için kamuyu aydınlatma — bu site resmi takvim değildir.",
+    },
+    {
+      id: "ilkgun",
+      title: "İlk gün / ilk hafta volatilite",
+      why: "Halka arzlarda açılış primi veya açılış iskontosu sık görülür; kısa vade haber beta’sı yüksektir.",
+      watch: "FOMO ile tavan kovalamak ve panik dip avı — ikisi de tepkisel. Simülasyonda ‘Simüle hareket üret’ ile salınımı hisset; gerçek para yok.",
+    },
+    {
+      id: "helal",
+      title: "Katılım / helal screening notu",
+      why: "Halka arza katılmak ≠ otomatik katılım endeksi üyeliği. Faaliyet alanı + faiz / uygun olmayan gelir eşikleri dönemsel kontrol edilir.",
+      watch: "Mock faiz oranı ve uygun olmayan gelir % alanları Metrikler’dedir; üyelik iddiası yoktur. Resmî liste: Borsa İstanbul duyuruları.",
+    },
+  ];
+
+  const IPO_SCENARIOS = [
+    {
+      id: "astor-ipo-edu",
+      badge: "İllüstratif · Çok yıllı",
+      symbol: "ASTOR",
+      title: "ASTOR tarzı — enerji ekipmanı halka arz sonrası",
+      when: "2023 halka arz anlatısı (eğitim)",
+      entryDate: "2023-01-18",
+      entryPrice: 12.5,
+      unit: "1 lot (örnek)",
+      setup: "Transformatör / şebeke yatırımı teması + büyüme anlatısı. Talep toplama sonrası yüksek ilgi ve sonrasında yüksek beta fiyat salınımı tipik eğitim örneğidir.",
+      shortOutcome: "Kısa vade: açılış primi / haber beta’sı ile sert yukarı-aşağı salınım; lot tahsisi küçük kalan bireyselde FOMO riski (sim).",
+      longOutcome: "Uzun vade: sipariş defteri ve sektör talebi öne çıkar; 2026’da yüksek F/K/PD/DD + haber şoku + dönemsel screening tartışmaları bir arada okunur (sim illüstrasyon).",
+      expert: "Lynch: işi tanı. Marks: yüksek beta’da aşırı tepki. Tek hisseye aşırı yüklenme eğitim hatasıdır.",
+      helalNote: "Branş ≠ otomatik helal onay. Resmî katılım listesi dönemsel; bu sitedeki sembol eğitim örneğidir.",
+    },
+    {
+      id: "solar-ipo-edu",
+      badge: "İllüstratif · Orta vade",
+      symbol: "SMRTG",
+      title: "YE / güneş teması — genç halka arz stili",
+      when: "Yenilenebilir ekipman arzı (eğitim senaryosu)",
+      entryDate: "2024-06-01",
+      entryPrice: 6.2,
+      unit: "1 lot (örnek)",
+      setup: "Kapasite artışı ve YE teşvik anlatıları fiyat aralığını yukarı çeker; free float sınırlıysa volatilite artar.",
+      shortOutcome: "İlk haftalar: tema alımı + ince piyasa → günlük % salınım yüksek olabilir (sim).",
+      longOutcome: "6–18 ay: proje gecikmesi veya marj baskısı anlatısı gelirse çoklu değerleme daralabilir; peer (ALFAS vb.) ile kıyas eğitimi.",
+      expert: "Bogle: maliyeti ve basitliği unutma. Munger: anlamadığın büyüme hikâyesinden kaçın.",
+      helalNote: "YE teması screening’i garanti etmez; faiz yükü ve faaliyet alanı ayrı kontrol edilir (eğitim).",
+    },
+    {
+      id: "tech-ipo-edu",
+      badge: "İllüstratif · Yıllık",
+      symbol: "KONTR",
+      title: "Teknoloji / endüstriyel otomasyon — büyüme F/K",
+      when: "Büyüme hissesi halka arz sonrası (eğitim)",
+      entryDate: "2022-09-15",
+      entryPrice: 18,
+      unit: "1 lot (örnek)",
+      setup: "Yüksek gelir büyümesi anlatısı ile yüksek F/K fiyatlanır; ortak satışı oranı ve lock-up takvimi kritik brief konularıdır.",
+      shortOutcome: "İlk çeyrek sonuçları beklenti altı/üstü → açılış priminin geri verilmesi veya devamı (sim örüntü).",
+      longOutcome: "Yıllık ufukta sipariş dönüşümü ve net borç/EBITDA ile ‘büyüme haklı mı?’ sorusu öne çıkar.",
+      expert: "Buffett: iş kalitesi. Graham: güvenlik marjı — büyüme F/K tek başına yetmez.",
+      helalNote: "Mock faiz / uygun olmayan gelir alanlarına bak; tavsiye veya üyelik değildir.",
+    },
+    {
+      id: "gyo-ipo-edu",
+      badge: "İllüstratif · Dengeli",
+      symbol: "EKGYO",
+      title: "GYO tarzı arz — kira / temettü anlatısı",
+      when: "Gayrimenkul yatırımcı profili (eğitim)",
+      entryDate: "2021-03-01",
+      entryPrice: 8.5,
+      unit: "1 lot (örnek)",
+      setup: "Daha düşük beta beklentisi; PD/DD ve temettü verimi öne çıkar. Sermaye artırımı ile proje finansmanı sık konuşulur.",
+      shortOutcome: "İlk gün volatilite hisseye göre daha ılımlı olabilir; yine de faiz/enflasyon manşeti GYO’yu sallar (sim).",
+      longOutcome: "Çok yıllı: faiz rejimi ve konut döngüsü PD/DD’yi yeniden fiyatlar; ‘istikrar’ garantisi yoktur.",
+      expert: "Dalio: rejim değişiminde tek varlık sınıfına bağlanma. Bogle: şeffaf, anlaşılır ürün.",
+      helalNote: "GYO yapısı + faiz geliri kalemleri screening’de ayrı okunur (eğitim özeti).",
+    },
+  ];
+
+  const IPO_NEWS = [
+    {
+      id: "ipo-talep-rekor",
+      when: "Eğitim · karışık dönem",
+      tag: "Talep toplama",
+      headline: "‘Rekor talep’ manşeti — ne düzeyde okunur?",
+      summary: "Medya ‘X kat talep’ dilini sever. Profesyonel çerçeve: fiyatın aralığın neresinde oluştuğu, kurumsal/bireysel kırılım ve karşılanmayan talebin büyüklüğü.",
+      decide: "Talep katı tek başına al sinyali değildir. Peer değerleme ve kullanım amacı ile çapraz kontrol (eğitim).",
+      history: "Yüksek talep + düşük float örneklerinde ilk gün sert primi ve sonraki günlerde geri verme örüntüleri görülmüştür — garanti değildir.",
+    },
+    {
+      id: "ipo-ortak-satis",
+      when: "Eğitim · izahname okuma",
+      tag: "Ortak satışı",
+      headline: "Ağır ortak satışı vs sermaye artırımı",
+      summary: "Şirkete nakit girmeyen satışta ‘büyüme finansmanı’ anlatısı zayıflar; likidite ve exit hikâyesi öne çıkar.",
+      decide: "Fonların kullanım amacını izahnamede net satırlara indir. Belirsiz dil = ihtiyat (simülasyon alışkanlığı).",
+      history: "Ortak çıkışlı arzlarda lock-up sonrası ikinci dalga satış baskısı brief konusu olmuştur (illüstratif).",
+    },
+    {
+      id: "ipo-astor-deal",
+      when: "Eyl 2026 bağlamı · eğitim",
+      tag: "Haber · ASTOR",
+      headline: "Halka arz sonrası büyük anlaşma manşeti (ASTOR tarzı)",
+      summary: "Çok milyar $ sipariş / anlaşma çerçevesi potansiyel yukarı tepki öğretir; aynı anda kovalama ve ‘fiyatlanmış mı?’ sorusunu da öğretir.",
+      decide: "Siparişin kâra dönüş süresi, marj ve bilanço kapasitesi. F/K zaten yüksekse haberin bir kısmı fiyattadır.",
+      history: "Yüksek beta enerji ekipmanı kağıtlarında manşet günü çift haneli salınım ballpark’ları görülmüştür — tavsiye değildir.",
+    },
+    {
+      id: "ipo-lockup",
+      when: "Eğitim · takvim",
+      tag: "Lock-up",
+      headline: "Lock-up bitişi yaklaşırken ne izlenir?",
+      summary: "Kurucu/büyük ortak kilit süresi dolunca teorik arz artabilir; fiyat önceden de fiyatlayabilir.",
+      decide: "Resmi KAP/SPK takvimi (bu site resmi değildir). Portföy ağırlığı ve likidite skoru eğitim kontrolüdür.",
+      history: "Bazı arzlarda kilit öncesi yumuşak satış, bazılarında ‘olay geçti’ alımı görülmüştür — tek yönlü kural yoktur.",
+    },
+    {
+      id: "ipo-katilim",
+      when: "2025–26 · eğitim",
+      tag: "Helal / katılım",
+      headline: "Halka arz oldu diye katılım endeksine girer mi?",
+      summary: "Hayır — otomatik üyelik yoktur. Faaliyet + finansal oranlar dönemsel screening’den geçer; giriş/çıkış üç ayda bir duyurulabilir.",
+      decide: "Mock faiz oranı ve uygun olmayan gelir % (Metrikler) yalnızca eğitim ballpark’ıdır. Resmî liste: BIST.",
+      history: "Eki 2026 döneminde Katılım listelerinde çoklu giriş/çıkış duyuruları eğitim brief’lerinde örneklenmiştir.",
+    },
+    {
+      id: "ipo-ilk-gun",
+      when: "Klasik örüntü · eğitim",
+      tag: "İlk gün",
+      headline: "Açılış primi ve ‘tavan kovalama’",
+      summary: "İlk işlem gününde tavan / taban veya geniş bant salınım sık tartışılır. Profesyonel dil: likidite, tahsis ve beklenti revizyonu.",
+      decide: "Kısa ufuk = haber beta’sı. Uzun ufuk = iş kalitesi. İkisini karıştırmamak eğitim hedefidir.",
+      history: "Eski önemli + yeni arzlarda ‘ilk gün kazancı’ anlatıları seçicidir; kayıplar daha az manşet olur — seçim yanlılığı uyarısı.",
+    },
   ];
 
   const money = (n) =>
@@ -1083,6 +1282,7 @@
   let newsFilter = "all";
   let sectorFilter = "all";
   let scenarioHorizon = "all";
+  let ipoFilter = "all";
   let prevPrices = {};
 
   const $ = (sel) => document.querySelector(sel);
@@ -1636,6 +1836,107 @@
   }
 
 
+
+  function renderIpo() {
+    const bar = $("#ipo-filter-chips");
+    if (bar) {
+      const opts = [
+        ["all", "Tümü"],
+        ["checklist", "Neye dikkat"],
+        ["scenarios", "Geçmiş senaryolar"],
+        ["news", "Haber / brief"],
+      ];
+      bar.innerHTML = opts
+        .map(
+          ([id, label]) =>
+            `<button class="chip ${ipoFilter === id ? "is-active" : ""}" type="button" data-ipo-filter="${id}">${label}</button>`
+        )
+        .join("");
+    }
+    const body = $("#ipo-body");
+    if (!body) return;
+    const show = (section) => ipoFilter === "all" || ipoFilter === section;
+
+    const disclaimer = `<article class="brief ipo-disclaimer">
+      <div class="brief-meta">
+        <strong>Önemli uyarı</strong>
+        <span class="tag">Eğitim / simülasyon</span>
+      </div>
+      <p class="takeaway">Bu bölüm <b>yatırım tavsiyesi değildir</b>. Gerçek para, canlı emir, SPK/BIST resmi duyurusu veya garantili getiri yoktur. Senaryo sonuçları illüstratiftir; tarihsel backtest değildir. Helal / katılım uygunluğu için yetkili screening kaynaklarına bakın.</p>
+    </article>`;
+
+    let html = disclaimer;
+
+    if (show("checklist")) {
+      html += `<div class="ipo-block">
+        <h2 class="ipo-heading">Neye dikkat edilmeli (pro kontrol listesi)</h2>
+        <p class="muted small ipo-lead">Profesyonel yatırımcıların talep toplama öncesi/sonrası taradığı başlıklar — eğitim çerçevesi.</p>
+        <div class="learn-grid">` + IPO_CHECKLIST.map((c) => `
+          <article class="learn-card ipo-check">
+            <span class="badge">Kontrol</span>
+            <h3>${c.title}</h3>
+            <p><b>Neden bakılır:</b> ${c.why}</p>
+            <details class="learn-detail"><summary>Nelere dikkat</summary><p>${c.watch}</p></details>
+          </article>`).join("") + `</div></div>`;
+    }
+
+    if (show("scenarios")) {
+      html += `<div class="ipo-block">
+        <h2 class="ipo-heading">Geçmiş senaryolar (illüstratif sim)</h2>
+        <p class="muted small ipo-lead">ASTOR tarzı ve diğer eğitim senaryoları — kısa/uzun ufuk çerçevesi. Rakamlar ballpark simülasyondur.</p>
+        <div class="card-grid">` + IPO_SCENARIOS.map((s) => {
+          const now = priceFor(s.symbol, 0, store.tick);
+          const pnl = now - s.entryPrice;
+          const pnlPct = (pnl / s.entryPrice) * 100;
+          const cls = pnl >= 0 ? "up" : "down";
+          return `<article class="feature-card">
+            <span class="badge">${s.badge}</span>
+            <span class="tag">${s.symbol}</span>
+            <h3>${s.title}</h3>
+            <p class="meta">${s.when} · giriş ${s.entryDate} · ${s.unit} @ ${money(s.entryPrice)}</p>
+            <p>${s.setup}</p>
+            <p><b>Kısa vade (çerçeve):</b> ${s.shortOutcome}</p>
+            <p><b>Uzun vade (çerçeve):</b> ${s.longOutcome}</p>
+            <div class="result ${cls}">İllüstratif sim (backtest değil). Bugün: ${money(now)} · K/Z ${money(pnl)} (${pct(pnlPct)})</div>
+            <p><b>Uzman açısı:</b> ${s.expert}</p>
+            <p class="meta"><b>Helal notu:</b> ${s.helalNote}</p>
+          </article>`;
+        }).join("") + `</div></div>`;
+    }
+
+    if (show("news")) {
+      html += `<div class="ipo-block">
+        <h2 class="ipo-heading">Haber / brief tarzı örnekler</h2>
+        <p class="muted small ipo-lead">Eski önemli örüntüler + 2026 bağlamlı eğitim briefleri. Garanti veya tavsiye değildir.</p>
+        <div class="briefs">` + IPO_NEWS.map((n) => `
+          <article class="brief">
+            <div class="brief-meta">
+              <strong>${n.headline}</strong>
+              <span class="tag">${n.tag}</span>
+              <span>${n.when}</span>
+            </div>
+            <p class="takeaway">${n.summary}</p>
+            <p class="takeaway"><b>Neye göre düşünülür:</b> ${n.decide}</p>
+            <p class="takeaway"><b>Geçmiş örüntü:</b> ${n.history}</p>
+          </article>`).join("") + `</div></div>`;
+    }
+
+    // CTA — templates / portfolio
+    if (ipoFilter === "all" || ipoFilter === "checklist") {
+      html += `<article class="panel ipo-cta">
+        <div class="panel-head"><h2>Öğretici deneme</h2></div>
+        <p class="muted">Halka arz temasını portföy psikolojisinde denemek için öğretici şablonlara (ör. enerji / büyüme) bakabilirsin. Nakit simülasyondan düşülür — gerçek para yoktur.</p>
+        <div class="actions-row" style="margin-top:0.75rem">
+          <button class="btn btn-sm" type="button" data-goto="templates">Öğretici portföylere git</button>
+          <button class="btn btn-sm btn-ghost" type="button" data-goto="metrics">Metrikler (pro · sim)</button>
+          <button class="btn btn-sm btn-ghost" type="button" data-goto="scenarios">Genel geçmiş senaryolar</button>
+        </div>
+      </article>`;
+    }
+
+    body.innerHTML = html;
+  }
+
   function applyPhoneMode() {
     const on = !!store.phoneMode;
     document.body.classList.toggle("phone-mode", on);
@@ -1665,6 +1966,7 @@
       metrics: "Metrikler (pro · sim)",
       learn: "Öğren",
       briefs: "Briefler",
+      ipo: "Halka arz (IPO) — eğitim",
     };
     $("#view-title").textContent = titles[view] || view;
     if (view === "portfolio" && active()) renderCharts();
@@ -1675,6 +1977,7 @@
     if (view === "learn") renderLearn();
     if (view === "metrics") renderMetrics();
     if (view === "briefs") renderBriefs();
+    if (view === "ipo") renderIpo();
     if (view === "templates") renderTemplates();
   }
 
@@ -1697,6 +2000,7 @@
     renderNews();
     renderLearn();
     renderBriefs();
+    renderIpo();
   }
 
   function fillAddSelect(pre) {
@@ -1903,6 +2207,12 @@
     if (hz) {
       scenarioHorizon = hz.dataset.scenarioHorizon;
       renderScenarios();
+      return;
+    }
+    const ipof = e.target.closest("[data-ipo-filter]");
+    if (ipof) {
+      ipoFilter = ipof.dataset.ipoFilter;
+      renderIpo();
     }
   });
 

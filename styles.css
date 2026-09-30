@@ -434,3 +434,23 @@ body.phone-mode .live-pill { margin-left: 0; width: 100%; justify-content: cente
 body.phone-mode .filter-bar { gap: 0.35rem; }
 body.phone-mode .chip { font-size: 0.78rem; padding: 0.3rem 0.6rem; }
 body.phone-mode .toast-stack { right: 0.5rem; left: 0.5rem; max-width: none; }
+
+
+/* Halka arz (IPO) eğitim */
+.ipo-stack { display: grid; gap: 1.25rem; }
+.ipo-block { display: grid; gap: 0.65rem; }
+.ipo-heading {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--text);
+}
+.ipo-lead { margin: 0; max-width: 780px; line-height: 1.45; }
+.ipo-disclaimer {
+  border-color: var(--warn-line);
+  background: linear-gradient(180deg, rgba(42, 36, 16, 0.55), var(--bg-elev));
+}
+.ipo-disclaimer .takeaway { color: var(--warn-text); }
+.ipo-disclaimer .takeaway b { color: var(--warn-text); }
+.ipo-check .badge { color: #93c5fd; background: rgba(59, 130, 246, 0.16); }
+.ipo-cta p { margin: 0; line-height: 1.5; }

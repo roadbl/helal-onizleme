@@ -26,6 +26,7 @@
 - Pro metrikler: F/K, sektör medyanı, PD/DD, DY, gelir/kâr büyümesi, net borç/EBITDA, likidite, faiz/uygun olmayan gelir mock
 - Öğren: detay açılır kartlar; briefler genişletilmiş
 - Geçmiş senaryolar: aylık / 6 ay / yıllık / çok yıllı ufuklar
+- **Halka arz (IPO)** eğitim sekmesi: pro kontrol listesi, illüstratif senaryolar (ASTOR tarzı vb.), haber/brief örnekleri — tavsiye / resmi BIST değildir
 - Fiyat tabanları Eyl 2026 civarı ballpark; tick seed düzeltmesi (Simüle hareket üret görünür çalışır)
 - Chart.js ile değer / dağılım grafikleri (yüklenemezse metin yedek)
 
